@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Jakim bogiem greckim byś był?</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #fff8e0;
+      padding: 20px;
+      max-width: 800px;
+      margin: auto;
+      color: #536d60;
+    }
+    h1 {
+      text-align: center;
+      color: #536d60;
+    }
+    .question {
+      margin-bottom: 20px;
+    }
+    .question p {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    label {
+      display: block;
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+    input[type="radio"] {
+      margin-right: 10px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-top: 20px;
+      background-color: #536d60;
+      color: #fff8e0;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #c4cfa4;
+    }
+    #result {
+      display: none;
+      text-align: center;
+      margin-top: 20px;
+      background-color: #c4cfa4;
+      padding: 20px;
+      border-radius: 8px;
+      color: #536d60;
+    }
+    #result h2 {
+      color: #536d60;
+    }
+    #result button {
+      background-color: #536d60;
+      color: #fff8e0;
+      padding: 10px 20px;
+      margin-top: 10px;
+      border: none;
+    }
+    #result button:hover {
+      background-color: #c4cfa4;
+    }
+  </style>
+</head>
+<body>
+  <h1>Jakim bogiem greckim byś był?</h1>
+  <form id="quizForm">
+    <div id="questions"></div>
+    <button type="submit">Zobacz wynik</button>
+  </form>
+
+  <div id="result">
+    <h2>Twój wynik:</h2>
+    <p id="resultText"></p>
+    <button onclick="resetQuiz()">Zrób quiz ponownie</button>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        text: "Jaki jest Twój ulubiony napój?",
+        answers: [
+          { text: "Kawa – nie wyobrażam sobie dnia bez niej", god: "Zeus", points: 7 },
+          { text: "Herbata – zawsze uspokaja", god: "Hestia", points: 6 },
+          { text: "Sok owocowy – pełen energii", god: "Hermes", points: 5 },
+          { text: "Woda – zdrowie i prostota", god: "Atena", points: 6 },
+          { text: "Koktajl – lubię eksperymentować", god: "Afrodyta", points: 6 },
+          { text: "Piwo – klasyka", god: "Ares", points: 7 }
+        ]
+      },
+      {
+        text: "Jaki kolor najbardziej Ci się podoba?",
+        answers: [
+          { text: "Czerwony – symbolizuje pasję", god: "Ares", points: 7 },
+          { text: "Niebieski – przypomina mi niebo", god: "Zeus", points: 6 },
+          { text: "Zielony – kojarzy mi się z naturą", god: "Hestia", points: 5 },
+          { text: "Różowy – kolor miłości", god: "Afrodyta", points: 6 },
+          { text: "Biały – czystość i prostota", god: "Atena", points: 6 },
+          { text: "Fioletowy – tajemniczy i majestatyczny", god: "Hermes", points: 5 }
+        ]
+      },
+      {
+        text: "Jakie zwierzę najbardziej Ci się podoba?",
+        answers: [
+          { text: "Lwy – symbol siły i odwagi", god: "Ares", points: 7 },
+          { text: "Gołębie – symbol pokoju", god: "Atena", points: 6 },
+          { text: "Psy – wierni towarzysze", god: "Hestia", points: 6 },
+          { text: "Orły – wolność i majestat", god: "Zeus", points: 7 },
+          { text: "Delfiny – inteligentne i pełne radości", god: "Afrodyta", points: 5 },
+          { text: "Węże – tajemnicze i zwinne", god: "Hermes", points: 5 }
+        ]
+      },
+      {
+        text: "Jaka supermoc by Ci się przydała?",
+        answers: [
+          { text: "Super siła – nie ma rzeczy, której bym nie podniósł!", god: "Ares", points: 7 },
+          { text: "Niezniszczalność – zawsze chciałem być niezniszczalny", god: "Zeus", points: 6 },
+          { text: "Teleportacja – szybka podróż w dowolne miejsce", god: "Hermes", points: 6 },
+          { text: "Czytanie w myślach – pełna kontrola", god: "Atena", points: 5 },
+          { text: "Zdolność leczenia innych – chcę pomagać", god: "Hestia", points: 6 },
+          { text: "Możliwość zmieniania kształtu – pełna elastyczność", god: "Afrodyta", points: 5 }
+        ]
+      },
+      {
+        text: "Jaki jest Twój ulubiony gatunek filmu?",
+        answers: [
+          { text: "Akcja – zawsze lubię, gdy coś się dzieje", god: "Ares", points: 7 },
+          { text: "Dramat – kocham historie pełne emocji", god: "Hestia", points: 5 },
+          { text: "Komedia – uwielbiam się śmiać", god: "Hermes", points: 6 },
+          { text: "Przygodowy – pełne wyzwań i niespodzianek", god: "Zeus", points: 6 },
+          { text: "Romans – lubię historie miłosne", god: "Afrodyta", points: 7 },
+          { text: "Science fiction – fascynuje mnie przyszłość", god: "Atena", points: 6 }
+        ]
+      },
+      {
+        text: "Co robisz w wolnym czasie?",
+        answers: [
+          { text: "Trenuję, rozwijam siłę", god: "Ares", points: 7 },
+          { text: "Czytam książki i uczę się", god: "Atena", points: 6 },
+          { text: "Spędzam czas z bliskimi w domu", god: "Hestia", points: 6 },
+          { text: "Podróżuję, odkrywam nowe miejsca", god: "Zeus", points: 7 },
+          { text: "Zajmuję się sztuką, tworzę", god: "Afrodyta", points: 5 },
+          { text: "Lubię szybkie auta, jeżdżę i testuję prędkość", god: "Hermes", points: 6 }
+        ]
+      },
+      {
+        text: "Jakie jedzenie najbardziej Ci smakuje?",
+        answers: [
+          { text: "Mięso – lubię wszystko, co mięsne", god: "Ares", points: 7 },
+          { text: "Sałatki – zdrowe i lekkie jedzenie", god: "Atena", points: 6 },
+          { text: "Słodycze – mam słabość do ciast i czekolady", god: "Afrodyta", points: 6 },
+          { text: "Pikantne jedzenie – lubię wyzwania", god: "Zeus", points: 7 },
+          { text: "Zupy – coś, co daje poczucie komfortu", god: "Hestia", points: 5 },
+          { text: "Fast food – szybka i prosta przyjemność", god: "Hermes", points: 5 }
+        ]
+      },
+      {
+        text: "Jak oceniasz innych ludzi?",
+        answers: [
+          { text: "Staram się ich zrozumieć i akceptować, nawet jeśli są inni", god: "Hestia", points: 7 },
+          { text: "Lubię pomagać innym, jeśli tego potrzebują", god: "Afrodyta", points: 6 },
+          { text: "Oceniam ich po tym, co osiągnęli, i jak radzą sobie w życiu", god: "Zeus", points: 6 },
+          { text: "Wolę nie oceniać, każdy ma swoją historię", god: "Atena", points: 5 },
+          { text: "Nie ufam łatwo, wolę patrzeć na ich działania", god: "Ares", points: 7 },
+          { text: "Czasami oceniam po pierwszym wrażeniu, ale później zmieniam zdanie", god: "Hermes", points: 6 }
+        ]
+      }
+    ];
+
+    const scores = {
+      Ares: 0,
+      Afrodyta: 0,
+      Atena: 0,
+      Zeus: 0,
+      Hera: 0,
+      Hermes: 0,
+      Hestia: 0
+    };
+
+    function shuffleAnswers(answers) {
+      return answers.sort(() => Math.random() - 0.5);
+    }
+
+    function renderQuestions() {
+      const questionsContainer = document.getElementById("questions");
+      questions.forEach((question, index) => {
+        const questionDiv = document.createElement("div");
+        questionDiv.classList.add("question");
+
+        const questionText = document.createElement("p");
+        questionText.textContent = question.text;
+        questionDiv.appendChild(questionText);
+
+        shuffleAnswers(question.answers).forEach((answer) => {
+          const label = document.createElement("label");
+          const input = document.createElement("input");
+          input.type = "radio";
+          input.name = `question${index}`;
+          input.value = answer.god;
+          input.addEventListener("change", () => {
+            scores[answer.god] += answer.points;
+          });
+
+          label.appendChild(input);
+          label.appendChild(document.createTextNode(answer.text));
+          questionDiv.appendChild(label);
+        });
+
+        questionsContainer.appendChild(questionDiv);
+      });
+    }
+
+    document.getElementById("quizForm").addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      const maxGod = Object.entries(scores).reduce((max, [god, score]) => {
+        return score > max.score ? { god, score } : max;
+      }, { god: "", score: 0 });
+
+      // Pokazanie wyniku
+      document.getElementById("result").style.display = "block";
+      document.getElementById("resultText").textContent = `Jesteś bogiem: ${maxGod.god}`;
+
+      // Ukrycie formularza
+      document.getElementById("quizForm").style.display = "none";
+    });
+
+    function resetQuiz() {
+      // Resetowanie wyników
+      scores.Ares = 0;
+      scores.Afrodyta = 0;
+      scores.Atena = 0;
+      scores.Zeus = 0;
+      scores.Hera = 0;
+      scores.Hermes = 0;
+      scores.Hestia = 0;
+
+      // Ukrycie wyników i pokazanie formularza
+      document.getElementById("result").style.display = "none";
+      document.getElementById("quizForm").style.display = "block";
+
+      // Resetowanie zaznaczonych odpowiedzi
+      const radioButtons = document.querySelectorAll("input[type=radio]");
+      radioButtons.forEach(button => button.checked = false);
+    }
+
+    renderQuestions();
+  </script>
+</body>
+</html>
